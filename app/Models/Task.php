@@ -8,4 +8,22 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'description',
+        'for_user',
+        'created_by'
+    ];
+
+
+    public function forUser()
+    {
+        return $this->belongsTo(User::class, 'id', 'for_user');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'id', 'created_by');
+    }
+
 }
