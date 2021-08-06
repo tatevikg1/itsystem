@@ -1,14 +1,17 @@
 <template>
-  <div>
-    <ul v-if="progress">
-      <li v-for="task in progress" :key="task.id">
-        <div>
+  <div >
+    <table v-if="progress" class="table-fixed border-separate" style="width:100%">
+      <tr v-for="task in progress" :key="task.id">
+        <td class="w-2/3 ">
           {{ task.description }}
-          <span v-if="task.status == 'accepted'">ok</span>
-          <span v-else>x</span>
-        </div>
-      </li>
-    </ul>
+        </td>
+
+        <td class="w-1/3 ">
+          <div v-if="task.status == 'accepted'" class="text-green-700">ok</div>
+          <div v-else class="text-red-700">x</div>
+        </td>
+      </tr>
+    </table>
   </div>
 </template>
 
