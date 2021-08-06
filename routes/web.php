@@ -2,9 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TaskController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,21 +15,18 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
-Route::middleware(['auth:sanctum'])->get('/dashboard',  [HomeController::class, 'index'])->name('dashboard');
+Route::middleware(['auth:sanctum'])->get('/',  [HomeController::class, 'index'])->name('dashboard');
 
+Route::middleware(['auth:sanctum'])->get('/task',       [TaskController::class, 'index'])->name('task.index');
 Route::middleware(['auth:sanctum'])->post('/task',      [TaskController::class, 'store'])->name('task.store');
-Route::middleware(['auth:sanctum'])->get('/task',          [TaskController::class, 'index'])->name('task.index');
+Route::middleware(['auth:sanctum'])->patch('/task',     [TaskController::class, 'update'])->name('task.update');
 
-
-// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->name('dashboard');

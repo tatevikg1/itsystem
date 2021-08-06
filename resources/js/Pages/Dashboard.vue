@@ -16,6 +16,7 @@
 
             <Users :users="users" />
           </div>
+
           <div class="p-12">
             <h2
               class="font-semibold text-xl text-gray-800 leading-tight"
@@ -26,8 +27,46 @@
             </h2>
             <div style="visi"></div>
           </div>
-          <div></div>
-          <div></div>
+
+          <div class="p-12">
+            <h2
+              class="font-semibold text-xl text-gray-800 leading-tight"
+              style="cursor: pointer"
+            >
+              My tasks
+            </h2>
+            <ul v-if="tasks">
+              <li v-for="task in tasks" :key="task.id">
+                <div>
+                  {{ task.description }}
+                  <span
+                    @click="updateTask(task.id, 'accepted')"
+                    style="cursor: pointer"
+                    class="p-5"
+                    >ok</span
+                  >
+                  <span
+                    @click="updateTask(task.id, 'rejected')"
+                    style="cursor: pointer"
+                    class="p-5"
+                    >x</span
+                  >
+                </div>
+              </li>
+            </ul>
+
+            <!-- <Tasks :tasks="tasks" /> -->
+          </div>
+
+          <div class="p-12">
+            <h2
+              class="font-semibold text-xl text-gray-800 leading-tight"
+              style="cursor: pointer"
+            >
+              In progress
+            </h2>
+            <Progress :progress="progress" />
+          </div>
         </div>
       </div>
     </div>
@@ -39,7 +78,7 @@
           <div class="">
             <select name="for_user" id="for_user">
               <option v-for="user in users" :key="user.id" :value="user.id">
-                {{ user.email }}
+                {{ user.name }}
               </option>
             </select>
           </div>
@@ -61,6 +100,8 @@
 <script>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Users from "./Users.vue";
+import Tasks from "./Tasks.vue";
+import Progress from "./Progress.vue";
 import JetSectionBorder from "@/Jetstream/SectionBorder";
 import { Inertia } from "@inertiajs/inertia";
 
@@ -69,10 +110,14 @@ export default {
     AppLayout,
     JetSectionBorder,
     Users,
+    Tasks,
+    Progress,
   },
   props: {
     user: Object,
     users: Object,
+    tasks: Object,
+    progress: Object,
   },
 
   methods: {
@@ -81,16 +126,24 @@ export default {
     },
 
     saveTask() {
-      Inertia.post(this.route('task.store'), {
-            _token: this.$page.props.csrf_token,
-            'for_user': document.querySelector("#for_user").value,
-            'description': document.querySelector("#description").value
+      Inertia.post(this.route("task.store"), {
+        _token: this.$page.props.csrf_token,
+        for_user: document.querySelector("#for_user").value,
+        description: document.querySelector("#description").value,
       });
       document.querySelector(".bg-modal").style.display = "none";
     },
 
     closeForm() {
       document.querySelector(".bg-modal").style.display = "none";
+    },
+
+    updateTask(taskId, status) {
+      Inertia.patch(this.route("task.update"), {
+        _token: this.$page.props.csrf_token,
+        id: taskId,
+        status: status,
+      });
     },
   },
 };
@@ -126,7 +179,7 @@ export default {
       right: 12px;
       font-size: 40px;
       transform: rotate(45deg);
-      color: black;
+      color: rgb(243, 229, 229);
       cursor: pointer;
     }
   }

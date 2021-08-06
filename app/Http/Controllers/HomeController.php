@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
@@ -11,25 +10,23 @@ use Illuminate\Support\Facades\Route;
 
 class HomeController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
+        /** @var App/Model/User $user */ 
+        $user = Auth::user();
+
         $users =  User::where('id', '!=', auth()->id())->select('id', 'name', 'email')->get(5);
+        $tasks = $user->tasks()->where(['status' => 'pending'])->get();
+        $inProgress = $user->cTasks()->where('status', '!=', 'pending')->get();
 
         return Inertia::render('Dashboard', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'user'  => Auth::user('id', 'name', 'email'),
-            'users' => $users
+            'user'  => $user,
+            'users' => $users,
+            'tasks' => $tasks,
+            'progress' => $inProgress
         ]);
     }
 
-    // public function store()
-    // {
-    //     return Inertia::render('Task/Create', [
-    //         'user'  => Auth::user('id', 'name', 'email'),
-    //         'users' => User::where('id', '!=', auth()->id())
-    //             ->select('id', 'name', 'email')
-    //             ->paginate(3)
-    //     ]);
-    // }
 }

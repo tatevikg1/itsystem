@@ -3,23 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Inertia\Inertia;
 
 class TaskController extends Controller
 {
-    public function index()
-    {
-        $tasks =  Task::all();
-        dd($tasks);
-
-        return Inertia::render('Profile/Index', [
-            'user'  => Auth::user('id', 'name', 'email'),
-        ]);
-    }
 
     public function store(Request $request)
     {
@@ -31,4 +19,15 @@ class TaskController extends Controller
 
         return Redirect::route('dashboard');
     }
+
+    public function update(Request $request)
+    {
+        $task = Task::find($request['id']);
+
+        $task->update([ 'status' => $request['status'] ]);
+        $task->save();
+
+        return Redirect::route('dashboard');
+    }
+
 }
